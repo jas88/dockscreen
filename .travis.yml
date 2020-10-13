@@ -12,7 +12,7 @@ before_install:
 - echo $DOCKER_KEY | buildah login -u jas88 --password-stdin docker.io
   
 script:
-- ctr1=$(buildah from debian:latest)
+- ctr1=$(buildah from docker://docker.io/debian:latest)
 - buildah run "$ctr1" -- apt-get update
 - buildah run "$ctr1" -- apt-get install -y clamav git ssh smbclient zip
 - buildah run "$ctr1" -- freshclam
