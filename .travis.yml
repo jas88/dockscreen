@@ -10,7 +10,8 @@ before_install:
 - sudo add-apt-repository -y ppa:projectatomic/ppa
 - sudo apt-get install buildah
 - echo $DOCKER_KEY | buildah login -u jas88 --password-stdin docker.io
-  
+- sudo service docker restart
+
 script:
 - ctr1=$(buildah from docker://docker.io/debian:latest)
 - buildah run "$ctr1" -- apt-get update
