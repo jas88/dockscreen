@@ -1,0 +1,21 @@
+language: generic
+
+services:
+- docker
+
+before_install:
+- sudo apt-get update
+- sudo apt-get install buildah
+- echo $DOCKER_KEY | buildah login -u jas88 --password-stdin docker.io
+  
+script:
+- ctr1=$(buildah from debian:latest)
+- buildah run "$ctr1" -- apt-get update
+- buildah run "$ctr1" -- apt-get install -y clamav git ssh smbclient zip
+- buildah run "$ctr1" -- freshclam
+- buildah commit "$ctr1" "jas88/dockscreen"
+- buildah push jas88/dockscreen docker://docker.io/jas88/dockscreen:latest
+
+env:
+  global:
+    secure: aCIxmKfQMtzW8ILVw6+7F7rViocyJv1kLkaP3FIGKo854RgZujom563Mq7PNQd8PdHCQtqPuYVgtbyt3QNYzweMKJpuJVCO8NOadSaUv5Pp2nvphhGdap7ApH5RjnWJZ73cAESaojsAU1pqqZBZjXoZAL1VjAjvhwFXxHxGKu9IpiAx4azWAz3ueTA9eqf1f9GM+PKKttcQ36oLhJCKsB9Yp4R7MiiQ4um47bcemzdbtP/SpJr3XZZLVNUjfC79S6tYV1AShoW6eCa653HsDoit/BIO8evsqVJyhov1lhPchaiejsmGLvFOhJScejgdgubYIlOMPERKq2dzULUV5vVu1CGk4BVEHoJRvQTz/m+6oYiEKtnvELlq3+ZuHMfxMpoSqoaVZY/QCei+PN5+6Z4JAjH/2B6z6KUtwD6HaDcBdR9z231dgsskxS+M9HAHAMmOdPf7Rey4l+MXmWX2ZIEhuepBt/gnpI9zmqvwAV83g5iqZpClG9cbVNfnTU040zRtnzI3Hv3Ufr2v7CB2wVrzSqRjwMyuUdyeBrUJNkSmhfOuNMIjyaEsWBXO6Q8pPiR6bvmbekBLOGJwzeKZG/Bom4IMuC0TBzcmHJMaryiHtjCE94dC/gvlDfzWGMrxne/88gNLnB+He68E8yy+mnYgQxvGyoxVe7JP+zDB2XQs=
